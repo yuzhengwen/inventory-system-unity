@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace InventorySystem
 {
-    public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         private InventorySlot slot;
 
@@ -101,5 +101,13 @@ namespace InventorySystem
             slotImage.color = defaultColor;
         }
         #endregion
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if(eventData.button == PointerEventData.InputButton.Right)
+            {
+                slot.UseItem();
+            }
+        }
     }
 }

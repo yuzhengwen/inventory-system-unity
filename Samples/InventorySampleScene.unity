@@ -175,7 +175,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -3206,6 +3207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 265e3d46f1493d24fa39bc8eab102997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotsCount: 10
   items: []
   startingInventory: {fileID: 11400000, guid: 0656c540c0c71ac4db716d6c85890a28, type: 2}
 --- !u!114 &4164931427453266145

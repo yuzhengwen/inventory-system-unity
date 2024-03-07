@@ -5,20 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(Inventory))]
 public class Collector : MonoBehaviour
 {
-    private Inventory inventory;
+    public Inventory Inventory { get; private set; }
     [SerializeField] private UI_Inventory uiInventory;
 
-    public event Action<ItemDataSO> OnItemCollected;
+    public Action<ItemDataSO> OnItemCollected;
     private void Start()
     {
-        inventory = GetComponent<Inventory>();
-        uiInventory.AssignInventory(inventory);
-
-    }
-    public void AddCollectibleToInventory(ItemDataSO data)
-    {
-        inventory.AddItem(data, 1);
-        OnItemCollected?.Invoke(data);
+        Inventory = GetComponent<Inventory>();
+        uiInventory.AssignInventory(Inventory);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
