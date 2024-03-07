@@ -9,15 +9,19 @@ public class ItemDB : ScriptableObject
 
     public const int COIN = 0, CRYSTAL = 1;
 
-    public static IUseable GetUseable(int id, Collector c)
+    public static IUseable GetUseable(int id, GameObject owner)
     {
         switch (id)
         {
             case CRYSTAL:
-                return new CrystalItem(c);
+                return new CrystalItem(owner);
             default:
                 return null;
         }
+    }
+    public static ItemDataSO GetItemData(int id)
+    {
+        return allItems[id];
     }
 }
 
