@@ -12,4 +12,4 @@ An easy to use inventory system
 - Hotbar and ability to use active item
 
 ## How to use
-See [[Documentation.md]]
+See [Documentation](Documentation.md)
