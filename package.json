@@ -1,0 +1,15 @@
+{
+  "name": "com.yuzuval.inventory_system",
+  "version": "1.0.0",
+  "displayName": "Inventory System",
+  "unity": "2022.3",
+  "keywords": [
+    "Inventory"
+  ],
+  "author": {
+    "name": "Yuzhengwen",
+    "email": "yuzhengwen0217@gmail.com",
+    "url": "https://www.yuzhengwen.github.com"
+  },
+  "description": "A basic singleplayer inventory:\n- Follows MVC architecture\n- Exposed interface for bulk adding/removing of items\n- drag and drop items around\n- allows setting max stack size for items\n\nComes with a simple Player and Item Collector system"
+}
