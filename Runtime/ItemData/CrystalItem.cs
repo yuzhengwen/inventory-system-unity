@@ -1,7 +1,7 @@
 using InventorySystem;
 using UnityEngine;
 
-public class CrystalItem : IUseable
+public class CrystalItem : BaseInventoryItem, IUseable
 {
     private GameObject owner;
     public CrystalItem(GameObject owner)
@@ -13,8 +13,4 @@ public class CrystalItem : IUseable
         slot.RemoveFromStack(1);
         Debug.Log("Crystal used");
     }
-}
-public interface IUseable
-{
-    void Use(InventorySlot slot);
 }

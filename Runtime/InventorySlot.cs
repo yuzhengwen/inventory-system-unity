@@ -8,7 +8,7 @@ namespace InventorySystem
     {
         public ItemDataSO itemData;
         public int stackSize;
-        public IUseable useable;
+        public BaseInventoryItem item;
 
         public event Action<int, int> OnStackChanged;
         public event Action<InventorySlot> OnItemChanged;
@@ -18,7 +18,7 @@ namespace InventorySystem
         {
             itemData = null;
             stackSize = 0;
-            useable = null;
+            item = null;
             OnSlotCleared?.Invoke();
         }
         public InventorySlot SetItem(InventorySlot slot)
@@ -27,15 +27,15 @@ namespace InventorySystem
             {
                 ClearSlot(); return this;
             }
-            return SetItem(slot.itemData, slot.stackSize, slot.useable);
+            return SetItem(slot.itemData, slot.stackSize, slot.item);
         }
-        public InventorySlot SetItem(ItemDataSO itemData, int stackSize, IUseable useable = null)
+        public InventorySlot SetItem(ItemDataSO itemData, int stackSize, BaseInventoryItem itemObj = null)
         {
             if (itemData == null || stackSize <= 0)
                 ClearSlot();
             this.itemData = itemData;
             this.stackSize = stackSize;
-            this.useable = useable;
+            this.item = itemObj;
             OnItemChanged?.Invoke(this);
             return this;
         }
@@ -112,7 +112,7 @@ namespace InventorySystem
         public void UseItem()
         {
             Debug.Log("Use Item");
-            useable?.Use(this);
+            (item as IUseable)?.Use(this);
         }
 
         public bool IsSameItem(InventorySlot slot)

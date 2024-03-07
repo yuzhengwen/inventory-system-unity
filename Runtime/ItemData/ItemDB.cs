@@ -9,7 +9,7 @@ public class ItemDB : ScriptableObject
 
     public const int COIN = 0, CRYSTAL = 1;
 
-    public static IUseable GetUseable(int id, GameObject owner)
+    public static BaseInventoryItem GetItem(int id, GameObject owner)
     {
         switch (id)
         {

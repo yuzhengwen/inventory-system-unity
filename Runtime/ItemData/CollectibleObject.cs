@@ -1,7 +1,7 @@
 ﻿using InventorySystem;
 using UnityEngine;
 
-public class CollectibleItem : MonoBehaviour, ICollectible
+public class CollectibleObject : MonoBehaviour, ICollectible
 {
     public ItemDataSO itemData;
     public virtual void Collect(Collector collector)
