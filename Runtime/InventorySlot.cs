@@ -72,7 +72,7 @@ namespace InventorySystem
         {
             stackSize -= amount;
             int excess = 0;
-            if (stackSize < 0)
+            if (stackSize <= 0)
             {
                 excess = -stackSize;
                 ClearSlot();

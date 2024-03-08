@@ -178,5 +178,13 @@ namespace InventorySystem
         {
             return items.All(item => !item.IsOccupied());
         }
+        public bool Contains(ItemDataSO itemData)
+        {
+            return itemHashSet.Contains(itemData);
+        }
+        public void SwapItems(InventorySlot slot1, InventorySlot slot2)
+        {
+            slot1.Swap(slot2);
+        }
     }
 }
