@@ -81,7 +81,7 @@ namespace InventorySystem
         }
         private InventorySlot AddNewItemInternal(ItemDataSO itemData, int amount)
         {
-            return GetNextEmptySlot().SetItem(itemData, amount);
+            return GetNextEmptySlot().SetItem(itemData, amount, ItemDB.GetItem(itemData.id, gameObject));
         }
         public void RemoveItem(ItemDataSO itemData, int amount)
         {
@@ -177,6 +177,14 @@ namespace InventorySystem
         public bool IsEmpty()
         {
             return items.All(item => !item.IsOccupied());
+        }
+        public bool Contains(ItemDataSO itemData)
+        {
+            return itemHashSet.Contains(itemData);
+        }
+        public void SwapItems(InventorySlot slot1, InventorySlot slot2)
+        {
+            slot1.Swap(slot2);
         }
     }
 }

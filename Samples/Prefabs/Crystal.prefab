@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6663528932171008136}
   - component: {fileID: 642134749515115791}
   - component: {fileID: 1928520959969637184}
-  - component: {fileID: 3878220445732276655}
+  - component: {fileID: 2865628391668331122}
   m_Layer: 0
   m_Name: Crystal
   m_TagString: Untagged
@@ -121,7 +121,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 1}
   m_Direction: 0
---- !u!114 &3878220445732276655
+--- !u!114 &2865628391668331122
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

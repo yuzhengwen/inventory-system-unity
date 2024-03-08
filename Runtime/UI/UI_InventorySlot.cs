@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace InventorySystem
 {
-    public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         private InventorySlot slot;
 
@@ -16,6 +16,8 @@ namespace InventorySystem
 
         private Image slotImage;
         private Color defaultColor;
+
+        [SerializeField] private MouseDragItem draggable;
 
         private void Awake()
         {
@@ -101,5 +103,73 @@ namespace InventorySystem
             slotImage.color = defaultColor;
         }
         #endregion
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                slot.UseItem();
+            }
+        }
+
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (!slot.IsOccupied()) return;
+            draggable.gameObject.SetActive(true);
+            draggable.SetItem(this);
+            ClearUISlot();
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            draggable.transform.position = eventData.position;
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            draggable.gameObject.SetActive(false);
+            var newSlot = CheckForValidSlot();
+            if (draggable.from == newSlot || newSlot == null)
+            {
+                UpdateItem(draggable.from.GetItem());
+                return;
+            }
+
+            // currently because InventorySlot is a class, we are passing by reference, so we can directly modify the slot
+            InventorySlot item1 = draggable.from.GetItem(); // item being dragged
+            InventorySlot item2 = newSlot.GetItem(); // item being dragged onto
+
+            // if item is of the same type, stack them if possible
+            if (item2.IsOccupied() && item1 == item2)
+            {
+                if (item2.stackSize + item1.stackSize <= item2.itemData.maxStackSize)
+                {
+                    item2.AddToStack(item1.stackSize);
+                    item1.ClearSlot();
+                }
+                else
+                {
+                    int amountToMove = item2.itemData.maxStackSize - item2.stackSize;
+                    item2.AddToStack(amountToMove);
+                    item1.RemoveFromStack(amountToMove);
+                }
+            }
+            else
+                item1.Swap(item2);
+        }
+        private UI_InventorySlot CheckForValidSlot()
+        {
+            RaycastHit2D[] hits;
+            hits = Physics2D.RaycastAll(draggable.transform.position, transform.forward, 100.0F);
+
+            foreach (RaycastHit2D hit in hits)
+            {
+                UI_InventorySlot newSlot = hit.collider.gameObject.GetComponent<UI_InventorySlot>();
+                if (newSlot != null && newSlot != draggable.from)
+                    return newSlot;
+            }
+            return null;
+        }
     }
 }
