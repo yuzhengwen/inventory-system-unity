@@ -81,7 +81,7 @@ namespace InventorySystem
         }
         private InventorySlot AddNewItemInternal(ItemDataSO itemData, int amount)
         {
-            return GetNextEmptySlot().SetItem(itemData, amount, ItemDB.GetItem(itemData.id, gameObject));
+            return GetNextEmptySlot().SetItem(itemData, amount, ItemUtils.Instance.GetItem(itemData.id, gameObject));
         }
         public void RemoveItem(ItemDataSO itemData, int amount)
         {

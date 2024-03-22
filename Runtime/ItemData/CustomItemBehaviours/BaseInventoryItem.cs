@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class BaseInventoryItem 
 {
-
 }
 public interface IUseable
 {
