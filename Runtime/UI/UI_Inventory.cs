@@ -1,15 +1,16 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace InventorySystem
 {
     public class UI_Inventory : MonoBehaviour
     {
-        /// <summary>
-        /// Inventory object containing data to display
-        /// </summary>
-        [SerializeField] private Inventory inventory;
         [SerializeField] private GameObject inventorySlotPrefab;
+
+        [Header("Hotbar Settings")]
+        [SerializeField] private bool hotbar = false;
+        [SerializeField] private int noOfHotbarSlots = 10;
 
         // ordered list of slots
         private readonly List<UI_InventorySlot> inventorySlots = new();
@@ -20,12 +21,13 @@ namespace InventorySystem
         /// <param name="inventory"></param>
         public void AssignInventory(Inventory inventory)
         {
-            this.inventory = inventory;
-            AddSlots();
-        }
-        private void AddSlots()
-        {
             InventorySlot[] items = inventory.GetItems().ToArray();
+            if (hotbar)
+                items = items.Take(noOfHotbarSlots).ToArray();
+            AddSlots(items);
+        }
+        private void AddSlots(InventorySlot[] items)
+        {
             for (int i = 0; i < items.Length; i++)
             {
                 GameObject slot = Instantiate(inventorySlotPrefab, transform);

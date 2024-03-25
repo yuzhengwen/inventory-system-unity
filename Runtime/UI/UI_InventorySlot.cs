@@ -38,18 +38,33 @@ namespace InventorySystem
         public void AssignSlot(InventorySlot slot)
         {
             this.slot = slot;
-            slot.OnStackChanged += UpdateStackSize;
-            slot.OnItemChanged += UpdateItem;
-            slot.OnSlotCleared += ClearUISlot;
+            SubscribeEvents();
+        }
+        // will not run on first enable since slot is not set
+        private void OnEnable()
+        {
+            if (slot != null)
+            {
+                UpdateItem(slot);
+                SubscribeEvents();
+            }
         }
         private void OnDisable()
         {
             if (slot != null)
-            {
-                slot.OnStackChanged -= UpdateStackSize;
-                slot.OnItemChanged -= UpdateItem;
-                slot.OnSlotCleared -= ClearUISlot;
-            }
+                UnsubscribeEvents();
+        }
+        private void SubscribeEvents()
+        {
+            slot.OnStackChanged += UpdateStackSize;
+            slot.OnItemChanged += UpdateItem;
+            slot.OnSlotCleared += ClearUISlot;
+        }
+        private void UnsubscribeEvents()
+        {
+            slot.OnStackChanged -= UpdateStackSize;
+            slot.OnItemChanged -= UpdateItem;
+            slot.OnSlotCleared -= ClearUISlot;
         }
         // automatically called when inventory slot being tracked becomes empty
         private void ClearUISlot()

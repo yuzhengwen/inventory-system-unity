@@ -81,7 +81,7 @@ namespace InventorySystem
         }
         private InventorySlot AddNewItemInternal(ItemDataSO itemData, int amount)
         {
-            return GetNextEmptySlot().SetItem(itemData, amount, ItemUtils.Instance.GetItem(itemData.id, gameObject));
+            return GetNextEmptySlot().SetItem(itemData, amount, ItemUtils.Instance.CreateItemInstance(itemData.id, gameObject));
         }
         public void RemoveItem(ItemDataSO itemData, int amount)
         {
@@ -144,7 +144,7 @@ namespace InventorySystem
         /// </summary>
         public void FillSpace()
         {
-            InventorySlot[] filled = items.Where(item => item.itemData != null && item.stackSize > 0).ToArray();
+            InventorySlot[] filled = items.Where(item => item.IsOccupied()).ToArray();
             // if we simply store references to the inventoryslots, we will lose them when we clear the inventory
             filled = Array.ConvertAll(filled, i => i.Copy()); // creates copy of each item (not reference)
             ClearInventory();

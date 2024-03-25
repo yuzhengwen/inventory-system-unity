@@ -7,8 +7,6 @@ public class TestButtons : MonoBehaviour
     [SerializeField]
     private Inventory inventory;
     [SerializeField]
-    private UI_Inventory uiInventory;
-    [SerializeField]
     private ItemDataSO itemData;
     public void Add20Coins()
     {

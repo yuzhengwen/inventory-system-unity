@@ -6,13 +6,15 @@ namespace InventorySystem
     [Serializable]
     public class InventorySlot
     {
-        public ItemDataSO itemData;
+        public ItemDataSO itemData; // stores static shared data
         public int stackSize;
-        public BaseInventoryItem item;
+        public BaseInventoryItem item; // stores custom behaviours, can be null if no custom behaviour
 
+        #region Events
         public event Action<int, int> OnStackChanged;
         public event Action<InventorySlot> OnItemChanged;
         public event Action OnSlotCleared;
+        #endregion
 
         public void ClearSlot()
         {
@@ -21,6 +23,11 @@ namespace InventorySystem
             item = null;
             OnSlotCleared?.Invoke();
         }
+        /// <summary>
+        /// Wrapper method for SetItem(ItemDataSO, int, BaseInventoryItem)
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <returns></returns>
         public InventorySlot SetItem(InventorySlot slot)
         {
             if (slot == null)
@@ -40,10 +47,10 @@ namespace InventorySystem
             return this;
         }
         /// <summary>
-        /// overflow items are returned
+        /// Increases stack size
         /// </summary>
         /// <param name="amount">Amount to add to stack</param>
-        /// <returns></returns>
+        /// <returns>Amount of items unable to be added (overflow)</returns>
         public int AddToStack(int amount)
         {
             if (IsMaxStack())
@@ -64,10 +71,10 @@ namespace InventorySystem
             }
         }
         /// <summary>
-        /// amount of items still need to be removed returned
+        /// Decreases the stack size 
         /// </summary>
         /// <param name="amount">Amount to remove from stack</param>
-        /// <returns></returns>
+        /// <returns>Amount of items that still need to be removed</returns>
         public int RemoveFromStack(int amount)
         {
             stackSize -= amount;
@@ -79,14 +86,6 @@ namespace InventorySystem
             }
             OnStackChanged?.Invoke(stackSize, -amount);
             return excess;
-        }
-        public bool IsMaxStack()
-        {
-            return itemData ? stackSize == itemData.maxStackSize : false;
-        }
-        public bool IsOccupied()
-        {
-            return itemData != null;
         }
         /// <summary>
         /// Creates a full copy of the slot (not a reference)
@@ -114,10 +113,8 @@ namespace InventorySystem
             Debug.Log("Use Item");
             (item as IUseable)?.Use(this);
         }
-
-        public bool IsSameItem(InventorySlot slot)
-        {
-            return itemData == slot.itemData;
-        }
+        public bool IsMaxStack() => itemData ? stackSize == itemData.maxStackSize : false;
+        public bool IsOccupied() => itemData != null && stackSize > 0;
+        public bool IsSameItem(InventorySlot slot) => itemData == slot.itemData;
     }
 }
