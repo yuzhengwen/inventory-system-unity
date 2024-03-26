@@ -13,7 +13,7 @@ namespace InventorySystem
         [SerializeField] private int noOfHotbarSlots = 10;
 
         // ordered list of slots
-        private readonly List<UI_InventorySlot> inventorySlots = new();
+        public readonly List<UI_InventorySlot> inventorySlots = new();
 
         /// <summary>
         /// Assigns the inventory to be displayed
