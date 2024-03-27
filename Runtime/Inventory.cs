@@ -39,6 +39,21 @@ namespace InventorySystem
                 AddItem(item);
             }
         }
+        public void LoadInventoryExact(List<InventorySlot> items)
+        {
+            if (items.Count != slotsCount)
+            {
+                Debug.LogError("Inventory size mismatch");
+                return;
+            }
+            ClearInventory();
+            for (int i = 0; i < slotsCount; i++)
+            {
+                if (items[i].IsOccupied())
+                    // have to create new item behaviour instances because we can't serialize the them
+                    this.items[i].SetItem(items[i].itemData, items[i].stackSize, ItemUtils.Instance.CreateItemInstance(items[i].itemData.id, gameObject));
+            }
+        }
 
         public void AddItem(InventorySlot inventoryItem)
         {
@@ -109,7 +124,7 @@ namespace InventorySystem
             }
 
             // Remove from non-full stacks first
-            InventorySlot itemToRemoveFrom;
+            InventorySlot itemToRemoveFrom = null;
             while (nonFullStacks.Count > 0 && amount != 0)
             {
                 itemToRemoveFrom = nonFullStacks.Pop();
@@ -125,7 +140,8 @@ namespace InventorySystem
             {
                 // Remove item from hashset if no more of it is in inventory
                 if (nonFullStacks.Count == 0 && fullStacks.Count == 0)
-                    itemHashSet.Remove(itemData);
+                    if (itemToRemoveFrom == null || itemToRemoveFrom.IsOccupied() == false)
+                        itemHashSet.Remove(itemData);
             }
             else
                 Debug.LogError($"{amount} of {itemData.displayName} couldn't be removed");
@@ -153,9 +169,6 @@ namespace InventorySystem
                 items[i].SetItem(filled[i]);
             }
         }
-        /// <summary>
-        /// CLEARS INVENTORY
-        /// </summary>
         public void ClearInventory()
         {
             foreach (InventorySlot item in items)
@@ -170,21 +183,10 @@ namespace InventorySystem
                 Debug.Log($"{item.itemData.displayName}: {item.stackSize}");
             }
         }
-        public bool IsFull()
-        {
-            return items.All(item => item.IsOccupied());
-        }
-        public bool IsEmpty()
-        {
-            return items.All(item => !item.IsOccupied());
-        }
-        public bool Contains(ItemDataSO itemData)
-        {
-            return itemHashSet.Contains(itemData);
-        }
-        public void SwapItems(InventorySlot slot1, InventorySlot slot2)
-        {
-            slot1.Swap(slot2);
-        }
+        public bool IsFull() => items.All(item => item.IsOccupied());
+        public bool IsEmpty() => items.All(item => !item.IsOccupied());
+        public bool Contains(ItemDataSO itemData) => itemHashSet.Contains(itemData);
+        public void SwapItems(InventorySlot slot1, InventorySlot slot2) => slot1.Swap(slot2);
+
     }
 }
