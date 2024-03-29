@@ -3161,6 +3161,90 @@ PrefabInstance:
       propertyPath: draggable
       value: 
       objectReference: {fileID: 1477086093}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: useItem.m_Name
+      value: Use Item
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: useItem.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: nextItem.m_Name
+      value: Next Item
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: nextItem.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: prevItem.m_Name
+      value: Prev Item
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: prevItem.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: useItem.m_ExpectedControlType
+      value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: nextItem.m_ExpectedControlType
+      value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: prevItem.m_ExpectedControlType
+      value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: useItem.m_SingletonActionBindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: nextItem.m_SingletonActionBindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: prevItem.m_SingletonActionBindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: useItem.m_SingletonActionBindings.Array.data[0].m_Id
+      value: cec48a5c-33cb-4f76-9339-e5474e0bf2a2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: nextItem.m_SingletonActionBindings.Array.data[0].m_Id
+      value: f48e776b-e74e-484e-ba18-9a9f56c4ab59
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: prevItem.m_SingletonActionBindings.Array.data[0].m_Id
+      value: 89521e64-19d2-49c6-b606-04b86abaec70
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: useItem.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Keyboard>/f
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: nextItem.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Keyboard>/e
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: prevItem.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Keyboard>/q
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: useItem.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Use Item
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: nextItem.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Next Item
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015152895589566135, guid: a53957ec7ada51949847498baaa432df, type: 3}
+      propertyPath: prevItem.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Prev Item
+      objectReference: {fileID: 0}
     - target: {fileID: 4301904275995716475, guid: a53957ec7ada51949847498baaa432df, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3275,10 +3359,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ced28079485b7a44b0dfc402d8b2dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 4137624941815085209}
-  uiInventories:
-  - {fileID: 1867727711}
-  - {fileID: 795486506}
+  inventoryGroups:
+  - inventory: {fileID: 4137624941815085209}
+    acceptedTypes: 
+    acceptAllTypes: 1
+  uiGroups:
+  - uiInventory: {fileID: 1867727711}
+    inventoryToAssign: {fileID: 4137624941815085209}
+    canToggle: 0
+    visibleOnOpen: 0
+    visibleOnClose: 0
+  - uiInventory: {fileID: 795486506}
+    inventoryToAssign: {fileID: 4137624941815085209}
+    canToggle: 1
+    visibleOnOpen: 1
+    visibleOnClose: 0
+  toggleInventoryAction:
+    m_Name: Toggle Inventory
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: df29b454-47a5-4179-9e19-fc4e1277ea13
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 72f32b50-8db8-4b69-8bee-e40ba528fcf0
+      m_Path: <Keyboard>/i
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Toggle Inventory
+      m_Flags: 0
+    m_Flags: 0
 --- !u!114 &4137624941815085209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3291,7 +3403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 265e3d46f1493d24fa39bc8eab102997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotsCount: 10
+  slotsCount: 30
   items: []
   startingInventory: {fileID: 11400000, guid: 0656c540c0c71ac4db716d6c85890a28, type: 2}
 --- !u!61 &4893721124868031777

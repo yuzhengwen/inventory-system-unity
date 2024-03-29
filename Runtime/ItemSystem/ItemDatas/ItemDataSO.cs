@@ -10,4 +10,11 @@ public class ItemDataSO : ScriptableObject
     public Sprite sprite;
     public int id;
     public int maxStackSize;
+
+    public ItemType itemType;
+}
+
+public enum ItemType
+{
+    General, Currency, Equipment
 }

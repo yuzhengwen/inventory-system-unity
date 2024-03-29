@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace InventorySystem
         // ordered list of slots
         public readonly List<UI_InventorySlot> inventorySlots = new();
 
+        public event Action OnInventoryAssigned;
+
         /// <summary>
         /// Assigns the inventory to be displayed
         /// </summary>
@@ -25,6 +28,7 @@ namespace InventorySystem
             if (hotbar)
                 items = items.Take(noOfHotbarSlots).ToArray();
             AddSlots(items);
+            OnInventoryAssigned?.Invoke();
         }
         private void AddSlots(InventorySlot[] items)
         {

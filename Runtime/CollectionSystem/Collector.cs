@@ -1,45 +1,114 @@
-using InventorySystem;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Inventory))]
-public class Collector : MonoBehaviour
+namespace InventorySystem
 {
-    [Header("Inventory Model and List of views connected")]
-    [SerializeField] private Inventory inventory;
-    [SerializeField] private UI_Inventory[] uiInventories;
+    [RequireComponent(typeof(Inventory))]
+    public class Collector : MonoBehaviour
+    {
+        [Header("List of Inventory & Accepted Item Types")]
+        [SerializeField] private InventoryGroup[] inventoryGroups;
+        [Header("List of Inventory Views and Model to bind")]
+        [SerializeField] UI_InventoryGroup[] uiGroups;
+        private bool fullInventoryOpened = false;
 
-    public event Action<ItemDataSO> OnItemCollected;
-    private void Start()
-    {
-        foreach (UI_Inventory uiInventory in uiInventories)
-            uiInventory.AssignInventory(inventory);
-        uiInventories[1].gameObject.SetActive(false);
-    }
+        [Header("Keybinds")]
+        [SerializeField] private InputAction toggleInventoryAction;
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        ICollectible collectible = collision.GetComponent<ICollectible>();
-        collectible?.Collect(this);
-    }
-    public void AddItemsToInventory(ItemDataSO itemData, int amt = 1)
-    {
-        inventory.AddItem(itemData, amt);
-        OnItemCollected?.Invoke(itemData);
-    }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
+        public event Action<ItemDataSO> OnItemCollected;
+        private void Start()
         {
-            ToggleFullInventory();
+            foreach (var uiGroup in uiGroups)
+                uiGroup.uiInventory.AssignInventory(uiGroup.inventoryToAssign);
+            CloseFullInventory();
+            fullInventoryOpened = false;
+
+            toggleInventoryAction.performed += (ctx) => ToggleFullInventory();
+            toggleInventoryAction.Enable();
+        }
+        private void OnDisable()
+        {
+            toggleInventoryAction.Disable();
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            ICollectible collectible = collision.GetComponent<ICollectible>();
+            collectible?.Collect(this);
+        }
+        public void AddItemsToInventory(ItemDataSO itemData, int amt = 1)
+        {
+            foreach (var invGroup in inventoryGroups)
+            {
+                if (invGroup.acceptAllTypes)
+                {
+                    invGroup.inventory.AddItem(itemData, amt);
+                    continue;
+                }
+                foreach (var type in invGroup.acceptedTypes)
+                {
+                    if (itemData.itemType == type)
+                    {
+                        invGroup.inventory.AddItem(itemData, amt);
+                        break;
+                    }
+                }
+            }
+            OnItemCollected?.Invoke(itemData);
+        }
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) && fullInventoryOpened)
+            {
+                CloseFullInventory();
+            }
+        }
+        #region Opening Inventory
+        private void OpenFullInventory()
+        {
+            foreach (var uiGroup in uiGroups) uiGroup.Open();
+            fullInventoryOpened = true;
+        }
+        private void CloseFullInventory()
+        {
+            foreach (var uiGroup in uiGroups) uiGroup.Close();
+            fullInventoryOpened = false;
+        }
+        private void ToggleFullInventory()
+        {
+            if (fullInventoryOpened)
+                CloseFullInventory();
+            else
+                OpenFullInventory();
+        }
+        #endregion
+    }
+    [System.Serializable]
+    public class UI_InventoryGroup
+    {
+        public UI_Inventory uiInventory;
+        public Inventory inventoryToAssign;
+        public bool canToggle = true;
+        public bool visibleOnOpen = true;
+        public bool visibleOnClose = false;
+
+        public void Open()
+        {
+            if (canToggle)
+                uiInventory.gameObject.SetActive(visibleOnOpen);
+        }
+        public void Close()
+        {
+            if (canToggle)
+                uiInventory.gameObject.SetActive(visibleOnClose);
         }
     }
-
-    private void ToggleFullInventory()
+    [System.Serializable]
+    public class InventoryGroup
     {
-        foreach (UI_Inventory uiInventory in uiInventories)
-        {
-            uiInventory.gameObject.SetActive(!uiInventory.gameObject.activeSelf);
-        }
+        public Inventory inventory;
+        public ItemType[] acceptedTypes;
+        public bool acceptAllTypes;
     }
 }

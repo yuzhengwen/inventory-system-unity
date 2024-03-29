@@ -1,10 +1,10 @@
-using InventorySystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace YuzuValen
+namespace InventorySystem
 {
     public class HotbarSelector : MonoBehaviour
     {
@@ -12,27 +12,33 @@ namespace YuzuValen
         private int currentSlotIndex = 0;
         private int maxSlotIndex;
         private UI_InventorySlot currentSlot;
-        Vector3 targetPos;
-        private void Awake()
+
+        [Header("Hotbar Input Bindings")]
+        [SerializeField] private InputAction useItem;
+        [SerializeField] private InputAction nextItem;
+        [SerializeField] private InputAction prevItem;
+
+        private void OnEnable()
         {
-            targetPos = transform.localPosition;
+            useItem.performed += (ctx) => GetSelectedSlot().GetItem().UseItem();
+            nextItem.performed += (ctx) => NextItem();
+            prevItem.performed += (ctx) => PreviousItem();
+            useItem.Enable();
+            nextItem.Enable();
+            prevItem.Enable();
+            uiInventory.OnInventoryAssigned += UpdateSlots;
+        }
+        private void OnDisable()
+        {
+            useItem.Disable();
+            nextItem.Disable();
+            prevItem.Disable();
+            uiInventory.OnInventoryAssigned -= UpdateSlots;
         }
 
-        private void Update()
+        private void UpdateSlots()
         {
             maxSlotIndex = uiInventory.inventorySlots.Count - 1;
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                NextItem();
-            }
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                PreviousItem();
-            }
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                GetSelectedSlot().GetItem().UseItem();
-            }
         }
         public UI_InventorySlot GetSelectedSlot()
         {
