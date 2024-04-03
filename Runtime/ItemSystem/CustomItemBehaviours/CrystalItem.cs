@@ -10,7 +10,7 @@ public class CrystalItem : BaseInventoryItem, IUseable
     }
     public void Use(InventorySlot slot)
     {
-        slot.RemoveFromStack(1);
+        owner.GetComponent<Inventory>().RemoveFromSlot(slot, 1);
         Debug.Log("Crystal used");
     }
 }

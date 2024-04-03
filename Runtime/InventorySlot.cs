@@ -11,17 +11,28 @@ namespace InventorySystem
         public BaseInventoryItem item; // stores custom behaviours, can be null if no custom behaviour
 
         #region Events
+        /// <summary>
+        /// Triggered when only stack size changes (but not the item)
+        /// Passes the new stack size & change amount
+        /// </summary>
         public event Action<int, int> OnStackChanged;
+        /// <summary>
+        /// Triggered when item is changed in the slot
+        /// Passes the slot after the change
+        /// </summary>
         public event Action<InventorySlot> OnItemChanged;
+        /// <summary>
+        /// Triggered when slot is cleared
+        /// </summary>
         public event Action OnSlotCleared;
         #endregion
 
         public void ClearSlot()
         {
+            OnSlotCleared?.Invoke();
             itemData = null;
             stackSize = 0;
             item = null;
-            OnSlotCleared?.Invoke();
         }
         /// <summary>
         /// Wrapper method for SetItem(ItemDataSO, int, BaseInventoryItem)
@@ -48,6 +59,7 @@ namespace InventorySystem
         }
         /// <summary>
         /// Increases stack size
+        /// NOTE: Please call this through Inventory class to ensure events are triggered
         /// </summary>
         /// <param name="amount">Amount to add to stack</param>
         /// <returns>Amount of items unable to be added (overflow)</returns>
@@ -72,6 +84,7 @@ namespace InventorySystem
         }
         /// <summary>
         /// Decreases the stack size 
+        /// NOTE: Please call this through Inventory class to ensure events are triggered
         /// </summary>
         /// <param name="amount">Amount to remove from stack</param>
         /// <returns>Amount of items that still need to be removed</returns>
