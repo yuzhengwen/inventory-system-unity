@@ -2,22 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using YuzuValen.Utils;
 
 namespace InventorySystem
 {
     public class Inventory : MonoBehaviour
     {
+        [Header("Starting Inventory Settings")]
         [SerializeField] StartingInventory startingInventory;
+
+        [Header("Inventory Settings")]
         [SerializeField] private int slotsCount = 10;
+
+        [Header("View Inventory")]
         // ordered list of items
-        [SerializeField] private List<InventorySlot> items = new();
+        [ReadOnlyInspector][SerializeField] private List<InventorySlot> items = new();
+
         // dictionary for quick look up of items and their quantities
         private readonly Dictionary<ItemDataSO, int> itemQtys = new();
-
         //for showing dictioanry in inspector
-        [Header("Item Quantity Dictionary")]
-        [SerializeField] private List<ItemDataSO> keys = new();
-        [SerializeField] private List<int> values = new();
+        [Header("Item Quantity Display")]
+        [ReadOnlyInspector][SerializeField] private List<ItemDataSO> keys = new();
+        [ReadOnlyInspector][SerializeField] private List<int> values = new();
 
         // events
         public event Action<ItemDataSO, int> OnItemAdded;
