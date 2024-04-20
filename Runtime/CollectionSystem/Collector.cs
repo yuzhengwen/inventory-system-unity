@@ -15,6 +15,7 @@ namespace InventorySystem
 
         [Header("Keybinds")]
         [SerializeField] private InputAction toggleInventoryAction;
+        [SerializeField] private InputAction closeAction;
 
         public event Action<ItemDataSO> OnItemCollected;
         private void Start()
@@ -26,10 +27,15 @@ namespace InventorySystem
 
             toggleInventoryAction.performed += (ctx) => ToggleFullInventory();
             toggleInventoryAction.Enable();
+
+            closeAction = new("Close Inventory", InputActionType.Button, "<Keyboard>/escape");
+            closeAction.performed += (ctx) => CloseFullInventory();
+            closeAction.Enable();
         }
         private void OnDisable()
         {
             toggleInventoryAction.Disable();
+            closeAction.Disable();
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -57,16 +63,10 @@ namespace InventorySystem
             }
             OnItemCollected?.Invoke(itemData);
         }
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape) && fullInventoryOpened)
-            {
-                CloseFullInventory();
-            }
-        }
         #region Opening Inventory
         private void OpenFullInventory()
         {
+            if (fullInventoryOpened) return;
             foreach (var uiGroup in uiGroups) uiGroup.Open();
             fullInventoryOpened = true;
         }
