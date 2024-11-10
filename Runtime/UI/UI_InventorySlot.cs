@@ -151,13 +151,16 @@ namespace InventorySystem
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (!draggable.gameObject.activeSelf) return;
             draggable.transform.position = eventData.position;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (!draggable.gameObject.activeSelf) return;
             draggable.gameObject.SetActive(false);
             var newSlot = CheckForValidSlot();
+
             // if dragged back to the same slot or outside of any slot
             if (draggable.from == newSlot || newSlot == null)
             {
@@ -179,12 +182,16 @@ namespace InventorySystem
                     item2.AddToStack(item1.stackSize);
                     item1.ClearSlot();
                 }
-                else
+                // if item2 can take some of item1
+                else if (item2.stackSize < item2.itemData.maxStackSize)
                 {
                     int amountToMove = item2.itemData.maxStackSize - item2.stackSize;
                     item2.AddToStack(amountToMove);
                     item1.RemoveFromStack(amountToMove);
                 }
+                // trigger UI updates (sometimes not called properly)
+                newSlot.UpdateItem(item2);
+                UpdateItem(item1);
             }
             else
                 item1.Swap(item2);

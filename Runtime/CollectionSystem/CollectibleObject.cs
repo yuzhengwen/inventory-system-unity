@@ -1,6 +1,6 @@
 ﻿using InventorySystem;
 using UnityEngine;
-
+[RequireComponent(typeof(Collider2D))]
 public class CollectibleObject : MonoBehaviour, ICollectible
 {
     [SerializeField] private ItemDataSO itemData;

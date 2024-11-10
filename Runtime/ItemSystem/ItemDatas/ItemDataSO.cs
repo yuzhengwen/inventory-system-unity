@@ -11,6 +11,7 @@ public class ItemDataSO : ScriptableObject
     public Sprite sprite;
     public int id;
     public int maxStackSize;
+    public bool usable;
 
     public ItemType itemType;
     

@@ -170,7 +170,8 @@ namespace InventorySystem
         /// </summary>
         public void UseItem()
         {
-            Debug.Log("Use Item");
+            if (!IsOccupied()||!itemData.usable) return;
+            Debug.Log($"Use Item: {itemData.displayName}");
             OnItemUsed?.Invoke(this);
             (item as IUseable)?.Use(this);
         }
