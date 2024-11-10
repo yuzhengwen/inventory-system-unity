@@ -8,49 +8,65 @@ namespace InventorySystem
 {
     public class Inventory : MonoBehaviour
     {
-        [Header("Starting Inventory Settings")]
-        [SerializeField] StartingInventory startingInventory;
+        [Header("Starting Inventory Settings")] [SerializeField]
+        StartingInventory startingInventory;
 
-        [Header("Inventory Settings")]
-        [SerializeField] private int slotsCount = 10;
+        [Header("Inventory Settings")] [SerializeField]
+        private int slotsCount = 10;
 
         [Header("View Inventory")]
         // ordered list of items
-        [ReadOnlyInspector][SerializeField] private List<InventorySlot> items = new();
+        [ReadOnlyInspector]
+        [SerializeField]
+        private List<InventorySlot> items = new();
 
         // dictionary for quick look up of items and their quantities
         private readonly Dictionary<ItemDataSO, int> itemQtys = new();
+
         //for showing dictioanry in inspector
-        [Header("Item Quantity Display")]
-        [ReadOnlyInspector][SerializeField] private List<ItemDataSO> keys = new();
-        [ReadOnlyInspector][SerializeField] private List<int> values = new();
+        [Header("Item Quantity Display")] [ReadOnlyInspector] [SerializeField]
+        private List<ItemDataSO> keys = new();
+
+        [ReadOnlyInspector] [SerializeField] private List<int> values = new();
 
         // events
         public event Action<ItemDataSO, int> OnItemAdded;
         public event Action<ItemDataSO, int> OnItemRemoved;
+        public event Action<InventorySlot> OnItemUsed;
 
         private void Awake()
         {
+            // initialize empty inventory slots
             for (int i = 0; i < slotsCount; i++)
-            {
-                items.Add(new InventorySlot());
-            }
+                items.Add(new InventorySlot(this));
+            // subscribe to item used events
+            foreach (var item in items)
+                item.OnItemUsed += (i) => OnItemUsed?.Invoke(i);
         }
+
         private void Start()
         {
+            // load starting inventory
             if (startingInventory != null)
                 LoadInventoryFrom(startingInventory.startingItems);
         }
+
         private void OnEnable()
         {
             OnItemAdded += AddItemToDict;
             OnItemRemoved += RemoveItemFromDict;
         }
+
         private void OnDisable()
         {
             OnItemAdded -= AddItemToDict;
             OnItemRemoved -= RemoveItemFromDict;
         }
+
+        /// <summary>
+        /// Adds items from a list of InventorySlots
+        /// </summary>
+        /// <param name="items"></param>
         public void LoadInventoryFrom(List<InventorySlot> items)
         {
             ClearInventory();
@@ -59,6 +75,11 @@ namespace InventorySystem
                 AddItem(item);
             }
         }
+
+        /// <summary>
+        /// Loads inventory to be exactly the same as the list of InventorySlots passed in
+        /// </summary>
+        /// <param name="items"></param>
         public void LoadInventoryExact(List<InventorySlot> items)
         {
             if (items.Count != slotsCount)
@@ -66,13 +87,14 @@ namespace InventorySystem
                 Debug.LogError("Inventory size mismatch");
                 return;
             }
+
             ClearInventory();
             for (int i = 0; i < slotsCount; i++)
             {
                 if (items[i].IsOccupied())
-                    // have to create new item behaviour instances because we can't serialize the them
-                    this.items[i].SetItem(items[i].itemData, items[i].stackSize, ItemUtils.Instance.CreateItemInstance(items[i].itemData.id, gameObject));
+                    this.items[i].SetItem(items[i].itemData, items[i].stackSize);
             }
+
             ManualUpdateDict();
         }
 
@@ -80,6 +102,7 @@ namespace InventorySystem
         {
             AddItem(inventoryItem.itemData, inventoryItem.stackSize);
         }
+
         public void AddItem(ItemDataSO itemData, int amount)
         {
             int initialAmt = amount;
@@ -103,6 +126,7 @@ namespace InventorySystem
                         }
                     }
             }
+
             // if we get here, we need to add new inventoryitem stacks
             // add as many maxstacksize items as needed
             while (amount / itemData.maxStackSize > 0)
@@ -110,17 +134,27 @@ namespace InventorySystem
                 AddNewItemInternal(itemData, itemData.maxStackSize);
                 amount -= itemData.maxStackSize;
             }
+
             if (amount > 0)
             {
                 // add remainder
                 AddNewItemInternal(itemData, amount);
             }
+
             OnItemAdded?.Invoke(itemData, initialAmt);
         }
+
         private InventorySlot AddNewItemInternal(ItemDataSO itemData, int amount)
         {
-            return GetNextEmptySlot().SetItem(itemData, amount, ItemUtils.Instance.CreateItemInstance(itemData.id, gameObject));
+            var emptySlot = GetNextEmptySlot();
+            if (emptySlot == null)
+            {
+                Debug.LogError("No empty slots available");
+                return null;
+            }
+            return emptySlot.SetItem(itemData, amount);
         }
+
         public void RemoveItem(ItemDataSO itemData, int amount)
         {
             int initialAmt = amount;
@@ -129,6 +163,7 @@ namespace InventorySystem
                 Debug.LogError("Invalid amount or itemData");
                 return;
             }
+
             if (!itemQtys.ContainsKey(itemData))
             {
                 Debug.LogError("Item not found in inventory!");
@@ -153,6 +188,7 @@ namespace InventorySystem
                 itemToRemoveFrom = nonFullStacks.Pop();
                 amount = itemToRemoveFrom.RemoveFromStack(amount);
             }
+
             while (fullStacks.Count > 0 && amount != 0)
             {
                 itemToRemoveFrom = fullStacks.Pop();
@@ -163,6 +199,7 @@ namespace InventorySystem
                 Debug.LogError($"{amount} of {itemData.displayName} couldn't be removed");
             OnItemRemoved?.Invoke(itemData, initialAmt - amount);
         }
+
         /// <summary>
         /// Closes up gaps in the inventory
         /// </summary>
@@ -177,6 +214,7 @@ namespace InventorySystem
                 items[i].SetItem(filled[i]);
             }
         }
+
         public void ClearInventory()
         {
             foreach (InventorySlot item in items)
@@ -184,6 +222,7 @@ namespace InventorySystem
                 item.ClearSlot();
             }
         }
+
         public void PrintInventory()
         {
             foreach (InventorySlot item in items)
@@ -191,19 +230,24 @@ namespace InventorySystem
                 Debug.Log($"{item.itemData.displayName}: {item.stackSize}");
             }
         }
+
         public void RemoveFromSlot(InventorySlot slot, int amount)
         {
             OnItemRemoved?.Invoke(slot.itemData, amount);
             slot.RemoveFromStack(amount);
         }
+
         public List<InventorySlot> GetItems() => items;
         private InventorySlot GetNextEmptySlot() => items.FirstOrDefault(item => item.itemData == null);
         public bool IsFull() => items.All(item => item.IsOccupied());
         public bool IsEmpty() => items.All(item => !item.IsOccupied());
         public void SwapItems(InventorySlot slot1, InventorySlot slot2) => slot1.Swap(slot2);
+
         #region Item Quantity Dictionary Methods
+
         public bool Contains(ItemDataSO itemData) => itemQtys.ContainsKey(itemData);
         public int GetItemQuantity(ItemDataSO itemData) => itemQtys.ContainsKey(itemData) ? itemQtys[itemData] : 0;
+
         private void AddItemToDict(ItemDataSO itemData, int amount)
         {
             if (itemQtys.ContainsKey(itemData))
@@ -213,6 +257,7 @@ namespace InventorySystem
             keys = itemQtys.Keys?.ToList();
             values = itemQtys.Values?.ToList();
         }
+
         private void RemoveItemFromDict(ItemDataSO itemData, int amount)
         {
             if (!itemQtys.ContainsKey(itemData)) return;
@@ -223,6 +268,7 @@ namespace InventorySystem
             keys = itemQtys.Keys?.ToList();
             values = itemQtys.Values?.ToList();
         }
+
         /// <summary>
         /// When SetItem is used directly instead of Add/RemoveItem, use this to update the dictionary
         /// </summary>
@@ -233,6 +279,7 @@ namespace InventorySystem
                 if (item.IsOccupied())
                     AddItemToDict(item.itemData, item.stackSize);
         }
+
         #endregion
     }
 }

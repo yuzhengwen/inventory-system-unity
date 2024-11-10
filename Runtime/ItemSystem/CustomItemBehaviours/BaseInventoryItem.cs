@@ -3,8 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseInventoryItem 
+public abstract class BaseInventoryItem
 {
+    protected GameObject owner;
+    protected BaseInventoryItem(GameObject owner)
+    {
+        this.owner = owner;
+    }
 }
 public interface IUseable
 {

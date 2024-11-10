@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 [CreateAssetMenu(fileName = "ItemData", menuName = "Item System/Item Data", order = 1)]
 public class ItemDataSO : ScriptableObject
@@ -12,6 +13,9 @@ public class ItemDataSO : ScriptableObject
     public int maxStackSize;
 
     public ItemType itemType;
+    
+    [TypeFilter(typeof(BaseInventoryItem))]
+    public SerializableType customItemBehaviour = new(typeof(NoneItem));
 }
 
 public enum ItemType

@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 namespace InventorySystem
 {
-    public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+    public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler,
+        IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         private InventorySlot slot;
 
@@ -19,6 +20,8 @@ namespace InventorySystem
 
         [SerializeField] private MouseDragItem draggable;
 
+        [SerializeField] private bool rightClickUse = true;
+
         private void Awake()
         {
             uiInventoryItem = transform.GetChild(0).gameObject;
@@ -31,6 +34,7 @@ namespace InventorySystem
             stackSizeDisplay = uiInventoryItem.transform.Find("StackSize").GetComponent<TextMeshProUGUI>();
             labelDisplay = uiInventoryItem.transform.Find("Label").GetComponent<TextMeshProUGUI>();
         }
+
         /// <summary>
         /// Assigns the inventory slot to be tracked by this UI slot
         /// </summary>
@@ -40,6 +44,7 @@ namespace InventorySystem
             this.slot = slot;
             SubscribeEvents();
         }
+
         // will not run on first enable since slot is not set
         private void OnEnable()
         {
@@ -49,23 +54,27 @@ namespace InventorySystem
                 SubscribeEvents();
             }
         }
+
         private void OnDisable()
         {
             if (slot != null)
                 UnsubscribeEvents();
         }
+
         private void SubscribeEvents()
         {
             slot.OnStackChanged += UpdateStackSize;
             slot.OnItemChanged += UpdateItem;
             slot.OnSlotCleared += ClearUISlot;
         }
+
         private void UnsubscribeEvents()
         {
             slot.OnStackChanged -= UpdateStackSize;
             slot.OnItemChanged -= UpdateItem;
             slot.OnSlotCleared -= ClearUISlot;
         }
+
         // automatically called when inventory slot being tracked becomes empty
         private void ClearUISlot()
         {
@@ -87,6 +96,7 @@ namespace InventorySystem
 
             if (!uiInventoryItem.activeSelf) uiInventoryItem.SetActive(true);
         }
+
         // automatically called when inventory slot being tracked changes stack size
         private void UpdateStackSize(int stackSize, int change)
         {
@@ -95,6 +105,7 @@ namespace InventorySystem
                 ClearUISlot();
                 return;
             }
+
             stackSizeDisplay.text = stackSize.ToString();
         }
 
@@ -108,6 +119,7 @@ namespace InventorySystem
         }
 
         #region Mouse Hover effect
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             slotImage.color = new Color(255, 255, 255, 0.8f);
@@ -117,11 +129,12 @@ namespace InventorySystem
         {
             slotImage.color = defaultColor;
         }
+
         #endregion
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (eventData.button == PointerEventData.InputButton.Right)
+            if (rightClickUse && eventData.button == PointerEventData.InputButton.Right)
             {
                 slot.UseItem();
             }
@@ -145,8 +158,10 @@ namespace InventorySystem
         {
             draggable.gameObject.SetActive(false);
             var newSlot = CheckForValidSlot();
+            // if dragged back to the same slot or outside of any slot
             if (draggable.from == newSlot || newSlot == null)
             {
+                // put the item back
                 UpdateItem(draggable.from.GetItem());
                 return;
             }
@@ -156,8 +171,9 @@ namespace InventorySystem
             InventorySlot item2 = newSlot.GetItem(); // item being dragged onto
 
             // if item is of the same type, stack them if possible
-            if (item2.IsOccupied() && item1 == item2)
+            if (item2.IsOccupied() && item1.itemData == item2.itemData)
             {
+                // if item2 can take all of item1
                 if (item2.stackSize + item1.stackSize <= item2.itemData.maxStackSize)
                 {
                     item2.AddToStack(item1.stackSize);
@@ -173,6 +189,7 @@ namespace InventorySystem
             else
                 item1.Swap(item2);
         }
+
         private UI_InventorySlot CheckForValidSlot()
         {
             RaycastHit2D[] hits;
@@ -184,6 +201,7 @@ namespace InventorySystem
                 if (newSlot != null && newSlot != draggable.from)
                     return newSlot;
             }
+
             return null;
         }
     }
