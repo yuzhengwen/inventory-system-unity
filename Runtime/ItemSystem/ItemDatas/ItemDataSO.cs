@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utils;
+using YuzuValen.Utils;
 
 [CreateAssetMenu(fileName = "ItemData", menuName = "Item System/Item Data", order = 1)]
 public class ItemDataSO : ScriptableObject
