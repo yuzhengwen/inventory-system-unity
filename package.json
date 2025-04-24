@@ -6,6 +6,9 @@
   "keywords": [
     "Inventory"
   ],
+  "dependencies": {
+    "com.yuzuval.utils": "https://github.com/yuzhengwen/yuzu-utils-unity"
+  },
   "author": {
     "name": "Yuzhengwen",
     "email": "yuzhengwen0217@gmail.com",
