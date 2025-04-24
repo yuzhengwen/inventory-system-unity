@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using YuzuValen.Utils;
 
 namespace InventorySystem
 {
     public class Inventory : MonoBehaviour
     {
-        [Header("Starting Inventory Settings")] [SerializeField]
-        StartingInventory startingInventory;
+        [FormerlySerializedAs("startingInventory")] [Header("Starting Inventory Settings")] [SerializeField]
+        InventoryItemListSO inventoryItemListSo;
 
         [Header("Inventory Settings")] [SerializeField]
         private int slotsCount = 10;
@@ -33,6 +34,7 @@ namespace InventorySystem
         public event Action<ItemDataSO, int> OnItemAdded;
         public event Action<ItemDataSO, int> OnItemRemoved;
         public event Action<InventorySlot> OnItemUsed;
+        public event Action<List<InventorySlot>> OnSlotCountChanged;
 
         private void Awake()
         {
@@ -47,8 +49,8 @@ namespace InventorySystem
         private void Start()
         {
             // load starting inventory
-            if (startingInventory != null)
-                LoadInventoryFrom(startingInventory.startingItems);
+            if (inventoryItemListSo != null)
+                LoadInventoryFrom(inventoryItemListSo.startingItems);
         }
 
         private void OnEnable()
@@ -61,6 +63,14 @@ namespace InventorySystem
         {
             OnItemAdded -= AddItemToDict;
             OnItemRemoved -= RemoveItemFromDict;
+        }
+
+        [ContextMenu("Increase Slot Count")]
+        public void IncreaseSlotCount()
+        {
+            slotsCount++;
+            items.Add(new InventorySlot(this));
+            OnSlotCountChanged?.Invoke(items);
         }
 
         /// <summary>

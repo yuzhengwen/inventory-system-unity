@@ -26,11 +26,7 @@ namespace InventorySystem
         /// </summary>
         public event Action<InventorySlot> OnItemChanged;
 
-        /// <summary>
-        /// Triggered when slot is cleared
-        /// </summary>
         public event Action OnSlotCleared;
-
         public event Action<InventorySlot> OnItemUsed;
 
         #endregion
@@ -170,7 +166,7 @@ namespace InventorySystem
         /// </summary>
         public void UseItem()
         {
-            if (!IsOccupied()||!itemData.usable) return;
+            if (!IsOccupied() || !itemData.usable) return;
             Debug.Log($"Use Item: {itemData.displayName}");
             OnItemUsed?.Invoke(this);
             (item as IUseable)?.Use(this);
