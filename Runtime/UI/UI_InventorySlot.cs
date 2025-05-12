@@ -43,6 +43,7 @@ namespace InventorySystem
         {
             this.slot = slot;
             SubscribeEvents();
+            UpdateItem(slot);
         }
 
         // will not run on first enable since slot is not set

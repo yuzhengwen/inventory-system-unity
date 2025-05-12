@@ -503,6 +503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   draggable: {fileID: 0}
+  rightClickUse: 1
 --- !u!1 &7659746357542066971
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,7 +602,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 150, y: 150}
+  m_CellSize: {x: 125, y: 125}
   m_Spacing: {x: 20, y: 20}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -617,8 +618,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0e817073f4fe9c4da4b9925c514034e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 0}
   inventorySlotPrefab: {fileID: 6961842397248858229}
+  useSubset: 1
+  fromIndex: 5
+  toEnd: 1
+  toIndex: 0
 --- !u!1 &8586475149419022434
 GameObject:
   m_ObjectHideFlags: 0

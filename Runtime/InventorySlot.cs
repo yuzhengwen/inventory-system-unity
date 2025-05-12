@@ -85,7 +85,6 @@ namespace InventorySystem
                 );
             else
                 this.item = itemObj;
-
             OnItemChanged?.Invoke(this);
             return this;
         }

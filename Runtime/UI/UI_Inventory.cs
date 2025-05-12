@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace InventorySystem
 {
@@ -9,10 +10,12 @@ namespace InventorySystem
     {
         [SerializeField] private GameObject inventorySlotPrefab;
 
-        [Header("Hotbar Settings")] [SerializeField]
-        private bool hotbar = false;
+        [Header("Inventory Slice Settings")] [SerializeField]
+        private bool useSubset = false;
 
-        [SerializeField] private int noOfHotbarSlots = 10;
+        [SerializeField] private int fromIndex;
+        [SerializeField] private bool toEnd;
+        [SerializeField] private int toIndex;
 
         // ordered list of slots
         public readonly List<UI_InventorySlot> inventorySlots = new();
@@ -25,21 +28,25 @@ namespace InventorySystem
         /// <param name="inventory"></param>
         public void AssignInventory(Inventory inventory)
         {
-            AddSlots(hotbar ? inventory.GetItems().Take(noOfHotbarSlots).ToList() : inventory.GetItems());
+            if (toEnd)
+                toIndex = inventory.GetItems().Count;
+            AddSlots(useSubset
+                ? inventory.GetItems().Skip(fromIndex).Take(toIndex - fromIndex).ToList()
+                : inventory.GetItems());
             inventory.OnSlotCountChanged += UpdateSlots;
             OnInventoryAssigned?.Invoke();
         }
 
         private void AddSlots(List<InventorySlot> items)
         {
-            for (int i = 0; i < items.Count; i++)
+            foreach (var item in items)
             {
                 GameObject slot = Instantiate(inventorySlotPrefab, transform);
                 slot.SetActive(true);
                 slot.transform.SetParent(transform, false);
                 UI_InventorySlot uiSlot = slot.GetComponent<UI_InventorySlot>();
                 inventorySlots.Add(uiSlot);
-                uiSlot.AssignSlot(items[i]);
+                uiSlot.AssignSlot(item);
             }
         }
 
@@ -55,8 +62,8 @@ namespace InventorySystem
 
             inventorySlots.Clear();
 
-            AddSlots(hotbar ? slots.Take(noOfHotbarSlots).ToList() : slots);
-            
+            AddSlots(useSubset ? slots.Skip(fromIndex).Take(toIndex - fromIndex).ToList() : slots);
+
             // refresh ui: Why the fk is this necessary???
             foreach (var slot in inventorySlots)
             {

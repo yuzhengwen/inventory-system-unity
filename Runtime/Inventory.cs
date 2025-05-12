@@ -63,6 +63,10 @@ namespace InventorySystem
         {
             OnItemAdded -= AddItemToDict;
             OnItemRemoved -= RemoveItemFromDict;
+#if UNITY_EDITOR
+            keys.Clear();
+            values.Clear();
+#endif
         }
 
         [ContextMenu("Increase Slot Count")]
@@ -162,6 +166,7 @@ namespace InventorySystem
                 Debug.LogError("No empty slots available");
                 return null;
             }
+
             return emptySlot.SetItem(itemData, amount);
         }
 
@@ -264,8 +269,9 @@ namespace InventorySystem
                 itemQtys[itemData] += amount;
             else
                 itemQtys[itemData] = amount;
-            keys = itemQtys.Keys?.ToList();
-            values = itemQtys.Values?.ToList();
+#if UNITY_EDITOR
+            SyncList();
+#endif
         }
 
         private void RemoveItemFromDict(ItemDataSO itemData, int amount)
@@ -275,8 +281,20 @@ namespace InventorySystem
             itemQtys[itemData] = Mathf.Max(0, itemQtys[itemData] -= amount);
             if (itemQtys[itemData] == 0)
                 itemQtys.Remove(itemData);
-            keys = itemQtys.Keys?.ToList();
-            values = itemQtys.Values?.ToList();
+#if UNITY_EDITOR
+            SyncList();
+#endif
+        }
+
+        private void SyncList()
+        {
+            keys.Clear();
+            values.Clear();
+            foreach (var kvp in itemQtys)
+            {
+                keys.Add(kvp.Key);
+                values.Add(kvp.Value);
+            }
         }
 
         /// <summary>
