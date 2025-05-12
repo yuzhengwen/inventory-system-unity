@@ -7,35 +7,47 @@ namespace InventorySystem
 {
     public class InventoryController : MonoBehaviour
     {
+        [SerializeField] private int interactableInvIndex = 0;
+
         [Header("List of Inventory Models & Accepted Item Types")] [SerializeField]
         private InventoryGroup[] inventoryGroups;
 
         [Header("List of Inventory Views and Model to bind")] [SerializeField]
         private UI_InventoryGroup[] uiGroups;
 
-        private bool fullInventoryOpened = false;
+        public InventoryUIState state = InventoryUIState.Closed;
 
         [Header("Keybinds")] [SerializeField] private InputAction toggleInventoryAction;
         [SerializeField] private InputAction closeAction;
+        [SerializeField] private InputAction interactAction;
 
         public event Action<ItemDataSO> OnItemCollected;
 
         private void Start()
         {
             foreach (var uiGroup in uiGroups)
+            {
                 uiGroup.uiInventory.AssignInventory(uiGroup.inventoryToAssign);
-            CloseFullInventory();
+                uiGroup.Toggle(uiGroup.defaultOpen);
+            }
+
             if (toggleInventoryAction != null)
             {
-                toggleInventoryAction.performed += (ctx) => ToggleFullInventory();
+                toggleInventoryAction.performed += (ctx) => ToggleInventoryByInput();
                 toggleInventoryAction.Enable();
             }
 
             if (closeAction != null)
             {
                 closeAction = new("Close Inventory", InputActionType.Button, "<Keyboard>/escape");
-                closeAction.performed += (ctx) => CloseFullInventory();
+                closeAction.performed += (ctx) => CloseInventory();
                 closeAction.Enable();
+            }
+
+            if (interactAction != null)
+            {
+                interactAction.performed += (ctx) => InteractWithOtherInventory();
+                interactAction.Enable();
             }
         }
 
@@ -64,27 +76,79 @@ namespace InventorySystem
             closeAction.Disable();
         }
 
+        [SerializeField] private ObjectInventoryController interatableController = null;
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.TryGetComponent(out ObjectInventoryController controller))
+            {
+                interatableController = controller;
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (other.TryGetComponent(out ObjectInventoryController controller))
+            {
+                interatableController = null;
+            }
+        }
+
+        public void InteractWithOtherInventory()
+        {
+            if (interatableController != null)
+            {
+                ToggleInventoryWithInteractable();
+            }
+        }
+
         #region Opening Inventory
 
-        public void OpenFullInventory()
+        public void CloseInventory()
         {
-            if (fullInventoryOpened) return;
-            foreach (var uiGroup in uiGroups) uiGroup.Open();
-            fullInventoryOpened = true;
+            if (state == InventoryUIState.OpenInteractable) ToggleInventoryWithInteractable(false);
+            else if (state == InventoryUIState.OpenByInput) ToggleInventoryByInput(false);
         }
 
-        public void CloseFullInventory()
+        public void ToggleInventoryByInput(bool toggle)
         {
-            foreach (var uiGroup in uiGroups) uiGroup.Close();
-            fullInventoryOpened = false;
+            foreach (var uiGroup in uiGroups)
+            {
+                if (uiGroup.toggledByInput)
+                    uiGroup.Toggle(toggle);
+            }
+
+            state = toggle ? InventoryUIState.OpenByInput : InventoryUIState.Closed;
         }
 
-        public void ToggleFullInventory()
+        public void ToggleInventoryByInput()
         {
-            if (fullInventoryOpened)
-                CloseFullInventory();
-            else
-                OpenFullInventory();
+            switch (state)
+            {
+                case InventoryUIState.OpenInteractable:
+                    ToggleInventoryWithInteractable(false);
+                    break;
+                case InventoryUIState.OpenByInput:
+                    ToggleInventoryByInput(false);
+                    break;
+                default:
+                    ToggleInventoryByInput(true);
+                    break;
+            }
+        }
+
+        public void ToggleInventoryWithInteractable(bool toggle)
+        {
+            interatableController.ToggleInventory(toggle);
+            uiGroups[interactableInvIndex].Toggle(toggle);
+
+            state = toggle ? InventoryUIState.OpenInteractable : InventoryUIState.Closed;
+        }
+
+        public void ToggleInventoryWithInteractable()
+        {
+            interatableController.ToggleInventory();
+            ToggleInventoryWithInteractable(!uiGroups[interactableInvIndex].uiInventory.gameObject.activeSelf);
         }
 
         #endregion
@@ -96,19 +160,15 @@ namespace InventorySystem
         public UI_Inventory uiInventory;
         public Inventory inventoryToAssign;
         public bool canToggle = true;
-        public bool visibleOnOpen = true;
-        public bool visibleOnClose = false;
+        public bool toggledByInput;
+        public bool defaultOpen = false;
 
-        public void Open()
+        public void Toggle(bool open)
         {
             if (canToggle)
-                uiInventory.gameObject.SetActive(visibleOnOpen);
-        }
-
-        public void Close()
-        {
-            if (canToggle)
-                uiInventory.gameObject.SetActive(visibleOnClose);
+            {
+                uiInventory.gameObject.SetActive(open);
+            }
         }
     }
 
@@ -118,5 +178,12 @@ namespace InventorySystem
         public Inventory inventory;
         public ItemType[] acceptedTypes;
         public bool acceptAllTypes;
+    }
+
+    public enum InventoryUIState
+    {
+        OpenByInput,
+        OpenInteractable,
+        Closed
     }
 }

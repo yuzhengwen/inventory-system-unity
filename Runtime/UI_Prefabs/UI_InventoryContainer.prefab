@@ -620,9 +620,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventorySlotPrefab: {fileID: 6961842397248858229}
   useSubset: 1
-  fromIndex: 5
-  toEnd: 1
-  toIndex: 0
+  fromIndex: 0
+  toEnd: 0
+  toIndex: 5
 --- !u!1 &8586475149419022434
 GameObject:
   m_ObjectHideFlags: 0
