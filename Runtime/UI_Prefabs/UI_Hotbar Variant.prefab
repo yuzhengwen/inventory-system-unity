@@ -90,6 +90,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiInventory: {fileID: 6171388144650525639}
+  useItem:
+    m_Name: Use Item
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: a736fca8-0f0d-4e5b-bd83-48451b6dd5b1
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  nextItem:
+    m_Name: Next Item
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 18b06dea-30fd-43ef-81dc-2e15c5e1abb8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  prevItem:
+    m_Name: Prev Item
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 907d5c27-5743-473a-a66f-ab9a3ecc23f7
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!114 &6570802481954798095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,6 +145,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 169972120594893304, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_fontSize
+      value: 33.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 712065831021871534, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_CellSize.x
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 712065831021871534, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_CellSize.y
+      value: 150
+      objectReference: {fileID: 0}
     - target: {fileID: 1477340789931377743, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -198,9 +237,49 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3792203879087013547, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792203879087013547, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792203879087013547, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961842397248858229, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7659746357542066971, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
       propertyPath: m_Name
       value: UI_Hotbar Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 8785134787399244861, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8785134787399244861, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8785134787399244861, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 8785134787399244861, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 8785134787399244861, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 95
+      objectReference: {fileID: 0}
+    - target: {fileID: 8785134787399244861, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -95
       objectReference: {fileID: 0}
     - target: {fileID: 8833479078092272883, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
       propertyPath: hotbar
@@ -210,7 +289,8 @@ PrefabInstance:
       propertyPath: noOfHotbarSlots
       value: 5
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8460174444604336346, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1477340789931377743, guid: 2b0c49e392e154745be7d56721af9f0d, type: 3}

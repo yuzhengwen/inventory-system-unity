@@ -1,5 +1,7 @@
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -10,22 +12,26 @@ namespace InventorySystem
     {
         private InventorySlot slot;
 
-        private GameObject uiInventoryItem;
-        private Image icon;
-        private TextMeshProUGUI stackSizeDisplay;
-        private TextMeshProUGUI labelDisplay;
+        public GameObject uiInventoryItem;
+        public Image icon;
+        public TextMeshProUGUI stackSizeDisplay, labelDisplay;
 
         private Image slotImage;
         private Color defaultColor;
-
-        [SerializeField] private MouseDragItem draggable;
+        public MouseDragItem draggable;
 
         [SerializeField] private bool rightClickUse = true;
 
         private void Awake()
         {
+            // why does this not run
+            Debug.Log("Awake");
+        }
+
+        public void Init()
+        {
+            Debug.Log($"Initializing UI Inventory Slot: {gameObject.name}");
             uiInventoryItem = transform.GetChild(0).gameObject;
-            ClearUISlot();
 
             slotImage = GetComponent<Image>();
             defaultColor = slotImage.color;
@@ -33,6 +39,9 @@ namespace InventorySystem
             icon = uiInventoryItem.transform.Find("Icon").GetComponent<Image>();
             stackSizeDisplay = uiInventoryItem.transform.Find("StackSize").GetComponent<TextMeshProUGUI>();
             labelDisplay = uiInventoryItem.transform.Find("Label").GetComponent<TextMeshProUGUI>();
+            draggable = GameObject.FindObjectOfType<MouseDragItem>(true);
+
+            ClearUISlot();
         }
 
         /// <summary>
@@ -190,6 +199,7 @@ namespace InventorySystem
                     item2.AddToStack(amountToMove);
                     item1.RemoveFromStack(amountToMove);
                 }
+
                 // trigger UI updates (sometimes not called properly)
                 newSlot.UpdateItem(item2);
                 UpdateItem(item1);

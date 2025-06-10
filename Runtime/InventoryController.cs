@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace InventorySystem
 {
@@ -76,13 +77,13 @@ namespace InventorySystem
             closeAction.Disable();
         }
 
-        [SerializeField] private ObjectInventoryController interatableController = null;
+        [SerializeField] private ObjectInventoryController interactableController = null;
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.TryGetComponent(out ObjectInventoryController controller))
             {
-                interatableController = controller;
+                interactableController = controller;
             }
         }
 
@@ -90,13 +91,13 @@ namespace InventorySystem
         {
             if (other.TryGetComponent(out ObjectInventoryController controller))
             {
-                interatableController = null;
+                interactableController = null;
             }
         }
 
         public void InteractWithOtherInventory()
         {
-            if (interatableController != null)
+            if (interactableController != null)
             {
                 ToggleInventoryWithInteractable();
             }
@@ -139,7 +140,7 @@ namespace InventorySystem
 
         public void ToggleInventoryWithInteractable(bool toggle)
         {
-            interatableController.ToggleInventory(toggle);
+            interactableController.ToggleInventory(toggle);
             uiGroups[interactableInvIndex].Toggle(toggle);
 
             state = toggle ? InventoryUIState.OpenInteractable : InventoryUIState.Closed;
@@ -147,7 +148,7 @@ namespace InventorySystem
 
         public void ToggleInventoryWithInteractable()
         {
-            interatableController.ToggleInventory();
+            interactableController.ToggleInventory();
             ToggleInventoryWithInteractable(!uiGroups[interactableInvIndex].uiInventory.gameObject.activeSelf);
         }
 

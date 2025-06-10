@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Serialization;
 using YuzuValen.Utils;
@@ -44,10 +45,6 @@ namespace InventorySystem
             // subscribe to item used events
             foreach (var item in items)
                 item.OnItemUsed += (i) => OnItemUsed?.Invoke(i);
-        }
-
-        private void Start()
-        {
             // load starting inventory
             if (inventoryItemListSo != null)
                 LoadInventoryFrom(inventoryItemListSo.startingItems);
@@ -240,10 +237,20 @@ namespace InventorySystem
 
         public void PrintInventory()
         {
+            StringBuilder sb = new StringBuilder("Inventory:\n");
             foreach (InventorySlot item in items)
             {
-                Debug.Log($"{item.itemData.displayName}: {item.stackSize}");
+                if (item.IsOccupied())
+                {
+                    sb.AppendLine($"{item.itemData.displayName} x{item.stackSize}");
+                }
+                else
+                {
+                    sb.AppendLine("Empty Slot");
+                }
             }
+
+            Debug.Log(sb.ToString());
         }
 
         public void RemoveFromSlot(InventorySlot slot, int amount)

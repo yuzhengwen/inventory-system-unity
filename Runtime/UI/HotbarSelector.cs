@@ -10,11 +10,12 @@ namespace InventorySystem
     {
         [SerializeField] private UI_Inventory uiInventory;
         private int currentSlotIndex = 0;
-        private int maxSlotIndex;
+        private int MaxSlotIndex => uiInventory.inventorySlots.Count - 1;
         private UI_InventorySlot currentSlot;
 
-        [Header("Hotbar Input Bindings")]
-        [SerializeField] private InputAction useItem;
+        [Header("Hotbar Input Bindings")] [SerializeField]
+        private InputAction useItem;
+
         [SerializeField] private InputAction nextItem;
         [SerializeField] private InputAction prevItem;
 
@@ -26,50 +27,50 @@ namespace InventorySystem
             useItem.Enable();
             nextItem.Enable();
             prevItem.Enable();
-            uiInventory.OnInventoryAssigned += UpdateSlots;
         }
+
         private void OnDisable()
         {
             useItem.Disable();
             nextItem.Disable();
             prevItem.Disable();
-            uiInventory.OnInventoryAssigned -= UpdateSlots;
         }
 
-        private void UpdateSlots()
-        {
-            maxSlotIndex = uiInventory.inventorySlots.Count - 1;
-        }
         public UI_InventorySlot GetSelectedSlot()
         {
             return currentSlot;
         }
+
         public void PreviousItem()
         {
             if (currentSlotIndex == 0)
             {
-                ChangeIndex(maxSlotIndex);
+                ChangeIndex(MaxSlotIndex);
                 return;
             }
+
             ChangeIndex(currentSlotIndex - 1);
         }
 
         public void NextItem()
         {
-            if (currentSlotIndex == maxSlotIndex)
+            if (currentSlotIndex == MaxSlotIndex)
             {
                 ChangeIndex(0);
                 return;
             }
+
             ChangeIndex(currentSlotIndex + 1);
         }
+
         private void ChangeIndex(int index)
         {
             currentSlotIndex = index;
             var slot = uiInventory.inventorySlots[currentSlotIndex];
             currentSlot = slot;
             transform.localPosition = slot.transform.localPosition;
-            transform.GetComponent<RectTransform>().anchoredPosition = slot.GetComponent<RectTransform>().anchoredPosition;
+            transform.GetComponent<RectTransform>().anchoredPosition =
+                slot.GetComponent<RectTransform>().anchoredPosition;
         }
     }
 }

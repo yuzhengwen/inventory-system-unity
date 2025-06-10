@@ -8,7 +8,7 @@ namespace InventorySystem
 {
     public class UI_Inventory : MonoBehaviour
     {
-        [SerializeField] private GameObject inventorySlotPrefab;
+        [SerializeField] private UI_InventorySlot inventorySlotPrefab;
 
         [Header("Inventory Slice Settings")] [SerializeField]
         private bool useSubset = false;
@@ -41,10 +41,10 @@ namespace InventorySystem
         {
             foreach (var item in items)
             {
-                GameObject slot = Instantiate(inventorySlotPrefab, transform);
-                slot.SetActive(true);
-                slot.transform.SetParent(transform, false);
-                UI_InventorySlot uiSlot = slot.GetComponent<UI_InventorySlot>();
+                Debug.Log($"Instantiate UI Slot for item: {item.itemData?.name ?? "null"}");
+                var uiSlot = Instantiate(inventorySlotPrefab, transform);
+                uiSlot.transform.SetParent(transform, false);
+                uiSlot.Init();
                 inventorySlots.Add(uiSlot);
                 uiSlot.AssignSlot(item);
             }
